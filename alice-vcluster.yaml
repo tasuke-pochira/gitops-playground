@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: alice-vcluster
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.loft.sh
+    chart: vcluster
+    targetRevision: 0.19.x
+    helm:
+      releaseName: alice-cluster
+      values: |
+        service:
+          type: NodePort
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: team-alice
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
